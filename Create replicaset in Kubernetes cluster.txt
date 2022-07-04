@@ -1,0 +1,29 @@
+Create a ReplicaSet using nginx image with latest tag only and remember to mention tag i.e nginx:latest and name it as nginx-replicaset.
+Labels app should be nginx_app, labels type should be front-end. The container should be named as nginx-container; also make sure replicas counts are 4.
+
+/tmp/replicaset.yml:
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+   name: nginx-replicaset
+   labels:
+     app: nginx_app
+     type: front-end
+spec:
+   replicas: 4
+   selector:
+      matchLabels: 
+        app: nginx_app
+        type: front-end
+   template:
+     metadata:
+        labels:
+          app: nginx_app
+          type: front-end
+     spec:
+        containers:
+        - name: nginx-container
+          image: nginx:latest
+
+kubectl create -f /tmp/replicaset.yml
+kubectl get pods

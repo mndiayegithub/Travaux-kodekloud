@@ -1,0 +1,44 @@
+We already have an inventory file under /home/thor/ansible directory on jump host. Write a playbook playbook.yml under /home/thor/ansible directory on jump host itself. 
+Using the playbook perform below given tasks:
+. Install httpd web server on all app servers, and make sure its service is up and running.
+. Create a file /var/www/html/index.html with content: This is a Nautilus sample file, created using Ansible!
+. Using lineinfile Ansible module add some more content in /var/www/html/index.html file. Below is the content: Welcome to xFusionCorp Industries!
+Also make sure this new line is added at the top of the file.
+The /var/www/html/index.html file's user and group owner should be apache on all app servers.
+The /var/www/html/index.html file's permissions should be 0644 on all app servers
+
+playbook.yml:
+---
+- hosts: stapp01,stapp02,stapp03
+  become: yes
+  gather_facts: true
+  tasks:
+ 
+  - name: Install httpd
+    yum:
+      name: httpd
+      state: latest
+    notify: 
+    - Start httpd
+
+  - name: Create an index.html file 
+    copy:
+        dest: /var/www/html/index.html
+        content: 'This a Nautilus sample file, created using Ansible!'
+        follow: no
+        group: apache
+        owner: apache
+        mode: 0644
+  
+  - name: Add some content to index.html
+    lineinfile:
+        path: /var/www/html/index.html
+        src: /var/www/html/index.html
+        line: 'Welcome to xFusionCorp Industries!'
+        state: present
+
+  handlers: 
+  - name: Start httpd
+    service:
+        name: httpd
+        state: started

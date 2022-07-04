@@ -1,0 +1,9 @@
+a. On App Server 1 in Stratos DC pull nginx image (preferably latest tag but others should work too).
+-> docker pull nginx:latest
+
+b. Create a new container with name games from the image you just pulled.
+c. Map the host volume /opt/security with container volume /tmp. There is an sample.txt file present on same server under /tmp; copy that file to /opt/security. 
+Also please keep the container in running state.
+-> cp /tmp/sample.txt /opt/security
+-> docker run --name games -v /opt/security:/tmp -d -it nginx:latest /bin/bash
+-> docker exec -it [ID_CONTAINER] /bin/bash

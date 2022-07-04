@@ -1,0 +1,43 @@
+1) Create a deployment nagios-deployment for Nagios core. The container name must be nagios-container and it must use jasonrivers/nagios image.
+2) Create a user and password for the Nagios core web interface, user must be xFusionCorp and password must be LQfKeWWxWD. (you can manually perform this step after deployment)
+3) Create a service nagios-service for Nagios, which must be of targetPort type. nodePort must be 30008.
+You can use any labels as per your choice.
+Note: The kubectl on jump_host has been configured to work with the kubernetes cluster.
+
+/tmp/nagios.yaml:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+     name: nagios-deployment
+spec:
+     replicas: 1
+     selector:
+        matchLabels:
+             app: nagios-core 
+     template:
+        metadata:
+             labels:
+                app: nagios-core
+        spec:
+             containers:
+             - name: nagios-container
+               image: jasonrivers/nagios  
+---
+apiVersion: v1
+kind: Service
+metadata:
+     name: nagios-service
+spec:
+     type: NodePort
+     selector:
+        app: nagios-core
+     ports:
+        - port: 80
+          targetPort: 80
+          nodePort: 30008
+
+kubectl create -f /tmp/nagios.yaml : Create
+kubectl apply -f /tmp/nagions.yaml : To appy some changes
+kubectl exec -it [NAME_OF_POD] /bin/bash : Enter in the pod/container created 
+htpasswd /opt/nagios/etc/htpasswd.users xFusionCorp : Set user xFusionCorp and passwd for Nagios core interface
+curl -u xFusionCorp http://localhost/

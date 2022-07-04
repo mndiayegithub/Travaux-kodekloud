@@ -1,0 +1,13 @@
+Create a namespace named dev and create a POD under it; name the pod dev-nginx-pod and use nginx image with latest tag only and remember to mention tag i.e nginx:latest.
+
+Note: The kubectl utility on jump_host has been configured to work with the kubernetes cluster.
+
+a. Create a namespace named dev
+kubectl create namespace dev
+
+b. Create a POD under the namespace dev and name it dev-nginx-pod using the nginx image with latest tag i.e. nginx:latest
+kubectl run dev-nginx-pod --image nginx:latest -n dev
+
+c. See the pod created
+kubectl get pods -n dev
+kubectl describe pods -n dev

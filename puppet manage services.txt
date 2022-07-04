@@ -1,0 +1,28 @@
+Create a Puppet programming file news.pp under /etc/puppetlabs/code/environments/production/manifests directory on master node i.e Jump Host to perform the below given tasks :
+
+a. Install package tomcat using puppet package resource and start its service using puppet service resource on Puppet agent node 1 i.e App Server 1.
+Notes: :- Please make sure to run the puppet agent test using sudo on agent nodes, otherwise you can face certificate issues. 
+In that case you will have to clean the certificates first and then you will be able to run the puppet agent test.
+
+news.pp:
+class install_tomcat {
+
+# Install tomcat package 
+ package { 'tomcat':
+ ensure => latest,
+ }
+# Start tomcat service
+ service { 'tomcat':
+ ensure => running,
+ enable => true,
+ }
+
+}
+
+node 'stapp01.stratos.xfusioncorp.com','stapp02.stratos.xfusioncorp.com','stapp03.stratos.xfusioncorp.com' {
+ include install_tomcat
+}
+
+Validate the file with "puppet parser validate news.pp"
+
+On app Servers, "sudo puppet agent -tv"

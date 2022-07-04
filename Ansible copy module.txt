@@ -1,0 +1,16 @@
+a. On jump host create an inventory file /home/thor/ansible/inventory and add all application servers as managed nodes.
+b. On jump host create a playbook /home/thor/ansible/playbook.yml to copy /usr/src/security/index.html file to all application servers at location /opt/security.
+Note: Validation will try to run the playbook using command ansible-playbook -i inventory playbook.yml so please make sure the playbook works this way without passing any extra arguments.
+
+playbook.yml:
+---
+- hosts: stapp01,stapp02,stapp03
+  become: yes
+  gather_facts: true
+  tasks:
+
+  - name: Copy from local to remote servers
+    copy:
+      src: /usr/src/security/index.html
+      remote_src: no
+      dest: /opt/security/index.html

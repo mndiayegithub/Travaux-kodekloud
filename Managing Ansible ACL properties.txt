@@ -1,0 +1,65 @@
+Create a playbook.yml under /home/thor/ansible on jump host, an inventory file is already present under /home/thor/ansible directory on Jump Server itself.
+
+Create an empty file blog.txt under /opt/dba/ directory on app server 1. Set some acl properties for this file. 
+Using acl provide read '(r)' permissions to group tony (i.e entity is tony and etype is group).
+
+Create an empty file story.txt under /opt/dba/ directory on app server 2. Set some acl properties for this file. 
+Using acl provide read + write '(rw)' permissions to user steve (i.e entity is steve and etype is user).
+
+Create an empty file media.txt under /opt/dba/ on app server 3. Set some acl properties for this file. 
+Using acl provide read + write '(rw)' permissions to group banner (i.e entity is banner and etype is group).
+
+Try this command before and after : ansible all -a "ls -ltr /opt/dba" -i inventory
+
+/ansible/playbbok.yml:
+---
+- name: Create empty file and set ACL file properties in Host 1
+  hosts: stapp01
+  become: yes
+  tasks:
+  - name: Create empty file blog.txt
+    file:
+      path: /opt/dba/blog.txt      
+      state: touch
+
+  - name: Set ACL properties to /opt/dba/blog.txt
+    acl:
+     path: /opt/dba/blog.txt
+     permissions: r
+     entity: tony     
+     etype: group
+     state: present
+
+- name: Create empty file and set ACL file properties in Host 2
+  hosts: stapp02
+  become: yes
+  tasks:
+  - name: Create empty file story.txt
+    file: 
+      path: /opt/dba/story.txt
+      state: touch
+
+  - name: Set ACL properties to /opt/dba/story.txt
+    acl:
+      path: /opt/dba/story.txt
+      permissions: rw
+      entity: steve
+      etype: user
+      state: present
+
+- name: Create empty file and set ACL file properties in Host 3
+  hosts: stapp03
+  become: yes
+  tasks:
+  - name: Create empty file media.txt
+    file: 
+      path: /opt/dba/media.txt
+      state: touch
+
+  - name: Set ACL properties to /opt/dba/media.txt
+    acl:
+      path: /opt/dba/media.txt
+      permissions: rw
+      entity: banner
+      etype: group
+      state: present

@@ -1,0 +1,137 @@
+Linux cmd :
+- How to set time zone 
+sudo timedatectl set-timezone America/Los_Angeles
+timedatectl : Give the actual timezone
+
+- Find files owned by the user tony in /home/usersdata directory and cp into /commerce.
+find /home/usersdata/ -user tony -exec cp -a "{}" /ecommerce \;
+
+- Crontab : Planificateur de tâches
+crontab -e : root's crontab
+crontab -u username -e : username's crontab
+If crond is not working, pkill -f crond and restart.
+
+- Enable a service to start after boot time
+sudo chkconfig service_name on
+chkconfig est un utilitaire qui permet de gérer les services réseaux linux en ligne de commande. 
+Il se révèle pratique dans le sens ou il permet par exemple de gérer des services dans un script ou d’ajouter un service 
+dans certain runlevel.
+-level permet de préciser les niveaux d'executions :
+0   Halt
+1   Single-User mode
+2   Multi-user mode console logins only (without networking)
+3   Multi-User mode, console logins only
+4   Not used/User-definable
+5   Multi-User mode, with display manager as well as console logins (X11)
+6   Reboot
+345 – runlevels that the service will be enabled for by default.
+85 – start priority. The lower the number the higher the priority and the sooner a service will be started within a given runlevel.
+15 – stop priority. The lower the number the higher the priority and the sooner a service will be stopped within a given runlevel.
+
+- Delete from a file, a string or multiple string : software and SOFTWARE 
+sed '/software\|SOFTWARE/d' copy.txt >> result.txt
+- Replace a string by another in a file : replace 'the' with 'is'
+sed -i 's/the\b/is/g' copy.txt 
+
+- Delete from a file, a string : following
+sed '/\<following\>/d' /home/BSD.txt > /home/BSD_DELETE.txt
+- Replace a string by another in a file and make sure not to alter words containing strings (Neither) : replace 'the' with 'for' and 
+sed 's/the\b/for/g' /home/BSD.txt > /home/BSD_REPLACE.txt
+
+- Create a user : adduser <name>
+- Add a group user : groupadd <group>
+- Add a user in a group : usermod -aG <group> <name>
+- Remove a user from a group: gpasswd -d <name> <group>
+- Lists all users in a group : groups <group>
+- visudo : Enter in sudo file
+- visudo -c : Valid a /etc/sudoers syntax file
+
+- Open all incoming connections to Nginx's port (8097)
+iptables -A INPUT -p tcp --dport 8097 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+Cette commande ajoute une règle (-A) à la chaine controlant le traffic entrant (INPUT), pour autoriser le traffic (-j ACCEPT) 
+Après vérification que l'état de connection soit nouvelle ou déja établie (-m conntrack -ctstate NEW,ESTABLISHED)
+
+- Block all incoming connections to Apache's port (8084)
+iptables -A INPUT -p tcp --dport 8084 -m conntrack --ctstate NEW -j REJECT
+Cette commande ajoute une règle (-A) à la chaine contrôlant le traffic entrant (INPUT), pour rejetter le traffic (-j REJECT)
+après vérification que l'état de connection soit nouvelle (-m conntrack --cstate NEW)
+
+- Apache redirects : 
+. Move to /etc/httpd/conf.d/ and a file main.conf
+. Add this line :
+<VirtualHost *:5002>
+ServerName stapp01.stratos.xfusioncorp.com
+Redirect 301 / http://www.stapp01.stratos.xfusioncorp.com:5003 /
+</VirtualHost>
+
+<VirtualHost *:5002>
+ServerName www.stapp01.stratos.xfusioncorp.com:5002/blog/
+Redirect 302 /blog/ http://www.stapp01.stratos.xfusioncorp.com:5002/news/
+</VirtualHost>
+
+. Redirects http://stapp01.stratos.xfusioncorp.com:<Port>/ to http://www.stapp01.stratos.xfusioncorp.com:<Port>/ i.e. 301
+. Redirects http://www.stapp01.stratos.xfusioncorp.com:<Port>/blog/ to http://www.stapp01.stratos.xfusioncorp.com:<Port>/news/ i.e. 302
+
+
+- To encrypt a file encrypt_me.txt with gpg private key kodekloud@kodekloud.com
+gpg --encrypt -r kodekloud@kodekloud.com --armor < encrypt_me.txt -o encrypted_me.asc
+- To decrypt a file decrypt_me.asc with gpg private key kodekloud@kodekloud.com
+gpg --decrypt decrypt_me.asc > decrypted_me.txt
+
+- PAM AUthentification for Apache
+. To use PAM Authentification instead of basic htpasswd file based authentification, we have to install :
+yum --enablerepo=epel -y install mod_authnz_external pwauth
+. 
+cat /etc/httpd/conf.d/authnz_external.conf
+. Add this line :
+<Directory /var/www/html/protected>
+AuthType Basic
+AuthName "PAM Authentication"
+AuthBasicProvider external
+AuthExternal pwauth
+require valid-user
+</Directory>
+. mkdir -p /var/www/html/protected
+. cat /var/www/html/protected/index.html
+
+- Iptables rules
+. Block incoming port 8081 on all apps except for LBR HOST (172.16.238.14) : 
+iptables -A INPUT -p tcp --dport 8081 -s 172.16.238.14 -j ACCEPT
+iptables -A INPUT -p tcp --dport 8081 -j DROP
+
+- Create an SFTP user :
+. Create the user and the password
+. Create the directory to be setted as Chroot Directory as per task
+. Configure to add sftp user in sshd_config file : 
+Subsystem       sftp    internal-sftp
+Match User user_name
+ForceCommand internal-sftp
+PasswordAuthentication yes
+ChrootDirectory file_directory
+PermitTunnel no
+AllowTcpForwarding no
+X11Forwarding no
+AllowAgentForwarding no
+. Restart ssh
+
+- Install and setup PostgreSQL
+. Install postgresql with package postgresql-server and postgresql-contrib : yum install -y postgresql-server postgresql-contrib
+. Initialize DB setup : postgresql-setup initdb
+. systemctl enable postgresql, systemctl start postgresql, systemctl status postgresql 
+. Now login to the postgres : sudo -u postgres sql
+. Do your changes
+The postgresql config file is located on /var/lib/pgsql/data/postgresql.conf.
+. Modify the /var/lib/pgsql/data/postgresql.conf to add the good listened adress (uncomment localhost)
+. Modify the /var/lib/pgsql/data/pg_hba.conf 
+. Restart postgresql
+
+- Install and configure Tomcat Server
+. Install tomcat : yum install -y tomcat
+. The tomcat config file is located on : /usr/share/tomcat/conf/server.xml
+
+- Linux Troubleshooting on Apache
+. Port problem : 
+netstat -tulpn |grep LISTEN : netstat helps to check which service is using a port and whats the PID.
+ps -ef [name of the service] : To confirm the PID
+kill [PID]
+

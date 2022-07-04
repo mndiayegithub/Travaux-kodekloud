@@ -1,0 +1,67 @@
+The Puppet server package is already installed on puppet master i.e jump server and the Puppet agent package is already installed on all App Servers. 
+However, you may need to start the required services on all of these servers.
+
+Configure autosign configuration on the Puppet master i.e jump server (by creating an autosign.conf in the puppet configuration directory) and 
+assign the certificates for master node as well as for the all agent nodes. Use the respective host's FDQN to assign the certificates.
+
+Use alias puppet (dns_alt_names) for master node and add its entry in /etc/hosts config file on master i.e Jump Server as well as on the all agent nodes i.e App Servers.
+
+Notes: :- Please make sure to run the puppet agent test using sudo on agent nodes, otherwise you can face certificate issues. 
+In that case you will have to clean the certificates first and then you will be able to run the puppet agent test.
+
+. cat /etc/hosts
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.16.238.10   stapp01.stratos.xfusioncorp.com
+172.16.238.11   stapp02.stratos.xfusioncorp.com
+172.16.238.12   stapp03.stratos.xfusioncorp.com
+172.16.238.3    jump_host.stratos.xfusioncorp.com jump_host
+172.16.239.2    jump_host.stratos.xfusioncorp.com jump_host
+172.17.0.5      jump_host.stratos.xfusioncorp.com jump_host
+
+. Add jump_host server as master node of puppet:
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.16.238.10   stapp01.stratos.xfusioncorp.com
+172.16.238.11   stapp02.stratos.xfusioncorp.com
+172.16.238.12   stapp03.stratos.xfusioncorp.com
+172.16.238.3    jump_host.stratos.xfusioncorp.com jump_host puppet
+172.16.239.2    jump_host.stratos.xfusioncorp.com jump_host
+172.17.0.5      jump_host.stratos.xfusioncorp.com jump_host
+
+. Create autosign.conf :
+jump_host.stratos.xfusioncorp.com
+stapp01.stratos.xfusioncorp.com
+stapp02.stratos.xfusioncorp.com
+stapp03.stratos.xfusioncorp.com
+
+. ping puppet
+. systemctl restart puppetserver
+. systemctl status puppetserver
+
+puppetserver ca list --all
+
+. Modify /etc/hosts on target servers (add jump_host as master node of puppet):
+127.0.0.1       localhost
+::1     localhost ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+172.16.238.3    jump_host.stratos.xfusioncorp.com jump_host puppet
+172.16.239.2    jump_host.stratos.xfusioncorp.com jump_host
+172.16.238.12   stapp03.stratos.xfusioncorp.com stapp03
+172.16.239.4    stapp03.stratos.xfusioncorp.com stapp03
+172.17.0.6      stapp03.stratos.xfusioncorp.com stapp03
+
+. ping puppet
+. systemctl restart puppet && systemctl status puppet
+. puppet agent -tv

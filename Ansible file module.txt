@@ -1,0 +1,25 @@
+a. Create an inventory file ~/playbook/inventory on jump host and add all app servers in it.
+b. Create a playbook ~/playbook/playbook.yml to create a blank file /tmp/web.txt on all app servers.
+c. The /tmp/web.txt file permission must be 0777.
+d. The user/group owner of file /tmp/web.txt must be tony on app server 1, steve on app server 2 and banner on app server 3.
+Note: Validation will try to run the playbook using command ansible-playbook -i inventory playbook.yml, so please make sure the playbook works this way without passing any extra arguments.
+
+inventory: 
+stapp01 ansible_host=172.16.238.10 ansible_user=tony ansible_pass=Ir0nM@n
+stapp02 ansible_host=172.16.238.11 ansible_user=steve ansible_pass=Am3ric@
+stapp03 ansible_host=172.16.238.12 ansible_user=banner ansible_pass=BigGr33
+
+playbook.yml:
+---
+- hosts: stapp01,stapp02,stapp03
+  become: yes
+  gather_facts: true
+  tasks:
+
+  - name: Create a blank file /tmp/web.txt
+    file:
+       path: /tmp/web.txt
+       state: touch
+       owner: "{{ ansible_user  }}"
+       group: "{{ ansible_user  }}"
+       mode: 0777

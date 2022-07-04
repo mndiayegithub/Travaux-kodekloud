@@ -1,0 +1,10 @@
+a. Pull nginx:alpine docker image on Application Server 3.
+-> docker pull nginx:alpine
+
+b. Create a container named news using the image you pulled.
+-> docker run --name news nginx:alpine
+
+c. Map host port 3002 to container port 80. Please keep the container in running state.
+docker exec -it -p 3002:80 
+
+b+c -> docker run -d -p 3002:80 --name news nginx:alpine

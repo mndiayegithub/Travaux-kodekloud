@@ -1,0 +1,52 @@
+Write a playbook.yml under /home/thor/ansible directory on jump host, an inventory file is already present under /home/thor/ansible directory on jump host itself. 
+Using this playbook accomplish below given tasks:
+. Create an empty file /opt/data/blog.txt on app server 1; its user owner and group owner should be tony. Create a symbolic link of source path /opt/data to destination /var/www/html.
+. Create an empty file /opt/data/story.txt on app server 2; its user owner and group owner should be steve. Create a symbolic link of source path /opt/data to destination /var/www/html.
+. Create an empty file /opt/data/media.txt on app server 3; its user owner and group owner should be banner. Create a symbolic link of source path /opt/data to destination /var/www/html.
+Note: Validation will try to run the playbook using command ansible-playbook -i inventory playbook.yml so please make sure playbook works this way without passing any extra arguments.
+
+playbook.yml :
+---
+- hosts: stapp01,stapp02,stapp03
+  gather_facts: true
+  become: true
+  tasks:
+
+  - name: Create an empty file on App Server 1
+    file: 
+      path: /opt/data/blog.txt
+      src: /opt/data/blog.txt
+      owner: tony
+      group: tony
+      state: touch
+    register: var1
+    when: ansible_facts.hostname == "stapp01"
+    tags: stapp01
+
+  - name: Create an empty file on App Server 2
+    file:
+      path: /opt/data/story.txt
+      src: /opt/data/story.txt
+      owner: steve
+      group: steve
+      state: touch
+    register: var2
+    when: ansible_facts.hostname == "stapp02"
+    tags: stapp02
+
+  - name: Create an empty file on App Server 3
+    file:
+      path: /opt/data/media.txt
+      src: /opt/data/media.txt
+      owner: banner
+      group: banner
+      state: touch 
+    register: vars3
+    when: ansible_facts.hostname == "stapp03"
+
+  - name: Create a symbolic link on App Server 1,2 and 3
+    file:
+      src: /opt/data
+      dest: /var/www/html
+      state: link
+    tags: stapp01, stapp02, stapp03

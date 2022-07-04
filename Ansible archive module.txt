@@ -1,0 +1,34 @@
+
+
+---
+- hosts: stapp01,stapp02,stapp03
+  become: yes
+  gather_facts: true
+  tasks: 
+
+  - name: Create an archive of /usr/src/sysops/ on App Server 1
+    archive:
+       path: /usr/src/sysops/
+       dest: /opt/sysops/apps.tar.gz
+       format: gz
+       owner: tony
+       group: tony
+    when: inventory_hostname == "stapp01"
+
+  - name: Create an archive of /usr/src/sysops/ on App Server 2
+    archive:
+       path: /usr/src/sysops/
+       dest: /opt/sysops/apps.tar.gz
+       format: gz
+       owner: steve
+       group: steve
+    when: inventory_hostname == "stapp02"
+
+  - name: Create an archive of /usr/src/sysops/ on App Server 3 
+    archive:
+       path: /usr/src/sysops/
+       dest: /opt/sysops/apps.tar.gz
+       format: gz
+       owner: banner
+       group: banner
+    when: inventory_hostname == "stapp03"

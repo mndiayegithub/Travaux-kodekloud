@@ -1,0 +1,50 @@
+Copy blog.txt file present under /usr/src/security directory on jump host to App Server 1 under /opt/security directory. 
+Its user and group owner must be user tony and its permissions must be 0755 .
+
+Copy story.txt file present under /usr/src/security directory on jump host to App Server 2 under /opt/security directory. 
+Its user and group owner must be user steve and its permissions must be 0755 .
+
+Copy media.txt file present under /usr/src/security directory on jump host to App Server 3 under /opt/security directory. 
+Its user and group owner must be user banner and its permissions must be 0755 .
+
+NOTE: You can use ansible_nodename variable from gathered facts with when condition. Additionally, please make sure you are running the play for all hosts i.e use - hosts: all.
+Note: Validation will try to run the playbook using command ansible-playbook -i inventory playbook.yml, so please make sure the playbook works this way without passing any extra arguments.
+
+playbook.yml:
+---
+- hosts: all
+  become: yes
+  gather_facts: true
+  tasks:
+
+  - name: Copy blog.txt from local to App Server 1
+    copy:
+      src: /usr/src/security/blog.txt
+      dest: /opt/security/blog.txt
+      remote_src: no
+      owner: tony
+      group: tony
+      mode: 0755
+    when: ansible_facts.hostname == "stapp01"
+
+  - name: Copy story.txt from local to App Server 2
+    copy:
+      src: /usr/src/security/story.txt
+      dest: /opt/security/story.txt
+      remote_src: no
+      owner: steve
+      group: steve
+      mode: 0755
+    when: ansible_facts.hostname == "stapp02"
+       
+  - name: Copy media.txt from local to App Server 3
+    copy:
+      src: /usr/src/security/media.txt
+      dest: /opt/security/media.txt
+      remote_src: no
+      owner: banner
+      group: banner
+      mode: 0755
+    when: ansible_facts.hostname == "stapp03"
+
+We use ansible_facts.hostname or inventory_hostname.

@@ -1,0 +1,19 @@
+Create a pod named pod-httpd using httpd image with latest tag only and remember to mention the tag i.e httpd:latest.
+Labels app should be set to httpd_app, also container should be named as httpd-container.
+Note: The kubectl utility on jump_host has been configured to work with the kubernetes cluster.
+
+Create /tmp/pod.yaml:
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: pod-httpd
+    labels: 
+       app: httpd_app
+
+spec: 
+    containers: 
+    - name: httpd-container
+      image: httpd:latest
+
+
+kubectl create -f /tmp/pod.yaml

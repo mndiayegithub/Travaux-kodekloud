@@ -1,0 +1,18 @@
+Create a Puppet programming file ecommerce.pp under /etc/puppetlabs/code/environments/production/manifests directory on Puppet master node i.e Jump Server and 
+by using puppet file_line resource perform the following tasks.
+
+We have a file /opt/sysops/ecommerce.txt on App Server 2. 
+Use the Puppet programming file mentioned above to replace line Welcome to Nautilus Industries! to Welcome to xFusionCorp Industries!, no other data should be altered in this file.
+
+
+/etc/puppetlabs/code/environments/production/manifests/ecommerce.pp:
+class replace_line {
+ file_line { 'line_replace':
+  path => '/opt/sysops/ecommerce.txt',
+  line => 'Welcome to xFusionCorp Industries!',
+  match => 'Welcome to Nautilus Industries!',
+ }
+node 'stapp02.stratos.xfusioncorp.com' {
+ include replace_line
+ }
+}

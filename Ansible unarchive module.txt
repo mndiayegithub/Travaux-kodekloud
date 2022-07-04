@@ -1,0 +1,29 @@
+We have an inventory file under /home/thor/ansible directory on jump host, which should have all the app servers added already.
+
+There is a ZIP archive /usr/src/devops/nautilus.zip on jump host.
+
+Create a playbook.yml under /home/thor/ansible/ directory on jump host itself to perform the below given tasks.
+
+Unzip /usr/src/devops/nautilus.zip archive in /opt/devops/ location on all app servers.
+
+Make sure the extracted data must has the respective sudo user as their user and group owner, i.e tony for app server 1, steve for app server 2, banner for app server 3.
+
+The extracted data permissions must be 0655.
+
+playbook.yml:
+---
+- name: Extract archive
+  hosts: stapp01,stapp02,stapp03
+  become: yes
+  tasks:
+
+  - name: Copy and unzip nautilus.zip to node servers
+    unarchive:
+       src: /usr/src/devops/nautilus.zip
+       dest: /opt/devops
+       owner: "{{ ansible_user }}"
+       group: "{{ ansible_user }}"
+       mode: 0655
+
+
+ansible all -a "ls -ltr /opt/devops" -i inventory

@@ -1,0 +1,36 @@
+---
+- hosts: stapp01,stapp02,stapp03
+  gather_facts: yes
+  tasks:
+
+  - name: Create facts.txt file
+    blockinfile:
+        path: /root/facts.txt
+        create: yes
+        state: present
+        owner: root
+	group: root
+        marker: "<--! {mark} Ansible managed node IP is -->"
+        block: |
+            <h1> {{ ansible_host  }}  </h1>
+    tags: file
+
+  - name: Install httpd
+    yum:
+        name: httpd
+        state: latest
+    tags: apache
+
+  - name: Copy facts.txt into index.html
+    copy:
+        src: /root/facts.txt
+        dest: /var/www/html/index.html
+    notify:
+    - start httpd
+    tags: copy
+
+  handlers:
+  - name: Start httpd
+    service:
+        name: httpd
+        state: started

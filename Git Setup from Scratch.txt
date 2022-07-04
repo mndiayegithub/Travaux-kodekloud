@@ -1,0 +1,27 @@
+a. Install git, set up any values for user.email and user.name globally and create a bare repository /opt/games.git.
+-> yum install -y git
+-> git config --global --add user.name natasha
+-> git config --global --add user.email natasha@stratos.xfusioncorp.com
+-> git init --bare games.git
+
+b. There is an update hook (to block direct pushes to master branch) under /tmp on storage server itself; use the same to block direct pushes to master branch in /opt/games.git repo.
+-> cp /tmp/update /opt/games.git/hooks/
+.git/hooks folder contains shell scripts. These scripts trigger actions in response to specific events, so they can help you automate your development lifecycle.
+
+c. Clone /opt/games.git repo in /usr/src/kodekloudrepos/games directory.
+-> cd /usr/src/kodekloudrepos
+-> git clone /opt/games.git 
+
+d. Create a new branch xfusioncorp_games in repo that you cloned in /usr/src/kodekloudrepos.
+-> cd /usr/src/kodekloudrepos/games
+-> git checkout -b xfusioncorp_games
+
+e. There is a readme.md file in /tmp on storage server itself; copy that to repo, add/commit in the new branch you created, and finally push your branch to origin.
+-> cp /tmp/read.md /usr/src/kodekloudrepos/games/
+-> git add read.md
+-> git commit -m "add read.md"
+-> git push -u origin xfusioncorp_games
+
+f. Also create master branch from your branch and remember you should not be able to push to master as per hook you have set up.
+-> git checkout -b master
+-> git push origin master : Should not work due to the update script.

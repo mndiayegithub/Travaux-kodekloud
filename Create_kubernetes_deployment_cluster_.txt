@@ -1,0 +1,13 @@
+Create a deployment named httpd to deploy the application httpd using the image httpd:latest (remember to mention the tag as well)
+
+Note: The kubectl utility on jump_host has been configured to work with the kubernetes cluster.
+
+kubectl get deploy : List all deployments in kube cluster
+
+kubectl get namespaces : List all namespaces created in kube cluster
+
+kubectl create deploy httpd --image httpd:latest : Create a deployment named httpd with the image httpd:latest.
+ 
+kubectl get pods
+
+kubectl describe pod [name_of_the_pod]

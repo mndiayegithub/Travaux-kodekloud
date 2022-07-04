@@ -1,0 +1,41 @@
+Create a deployment using nginx image with latest tag only and remember to mention the tag i.e nginx:latest. 
+Name it as nginx-deployment. The container should be named as nginx-container, also make sure replica counts are 3.
+Create a NodePort type service named nginx-service. The nodePort should be 30011.
+Note: The kubectl utility on jump_host has been configured to work with the kubernetes cluster.
+
+/tmp/nginx.yaml:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: nginx-deployment
+spec:
+   replicas: 3
+   selector:
+     matchLabels:
+       app: nginx-core
+
+   template:
+     metadata:
+       labels:
+         app: nginx-core
+     spec:
+       containers:
+       - name: nginx-container
+         image: nginx:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: nginx-service
+spec: 
+  type: NodePort
+  selector:
+    app: MyService
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30011
+
+kubectl create -f /tmp/nginx.yaml
+kubectl get pods
+kubectl exec -it [ID_OF_POD] -- curl http://localhost

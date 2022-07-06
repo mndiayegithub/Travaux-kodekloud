@@ -32,10 +32,12 @@ kind: Service
 metadata:
   name: nginx-phpfpm-service
 spec:
+  selector:
+     app: nginx-phpfpm
   type: NodePort
   ports:
-  - port: 8080
-    targetPort: 80
+  - port: 8096
+    targetPort: 8096
     nodePort: 30012
 ---
 # First, create a ConfigMap whose contents are used
@@ -71,7 +73,7 @@ data:
       access_log        /var/log/nginx/access.log main;
       server {
 
-          listen 8098;
+          listen 8096;
           server_name localhost;
 
           root /var/www/html;
@@ -121,7 +123,7 @@ spec:
       mountPath: /etc/nginx/nginx.conf
       subPath: nginx.conf
     ports:
-    - containerPort: 80
+    - containerPort: 8096
 
 # Our php-fpm application 
   - name: php-fpm-container
@@ -130,4 +132,4 @@ spec:
     - name: shared-files
       mountPath: /var/www/html
     ports:
-    - containerPort: 80
+    - containerPort: 8096

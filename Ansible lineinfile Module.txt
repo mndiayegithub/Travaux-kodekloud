@@ -21,21 +21,20 @@ playbook.yml:
     notify: 
     - Start httpd
 
-  - name: Create an index.html file 
+  - name: Create a file
     copy:
-        dest: /var/www/html/index.html
-        content: 'This a Nautilus sample file, created using Ansible!'
-        follow: no
-        group: apache
-        owner: apache
-        mode: 0644
-  
-  - name: Add some content to index.html
+      dest: /var/www/html/index.html
+      content: "This is a Nautilus sample file, created using Ansible!"
+      owner: apache
+      group: apache
+      mode: 0644
+
+  - name: Change line in file
     lineinfile:
-        path: /var/www/html/index.html
-        src: /var/www/html/index.html
-        line: 'Welcome to xFusionCorp Industries!'
-        state: present
+      path: /var/www/html/index.html
+      line: "Welcome to Nautilus Group!"
+      firstmatch: yes
+      insertbefore: "This is a Nautilus sample file, created using Ansible!"
 
   handlers: 
   - name: Start httpd

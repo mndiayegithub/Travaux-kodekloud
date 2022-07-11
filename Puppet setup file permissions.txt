@@ -1,0 +1,17 @@
+Create a Puppet programming file demo.pp under /etc/puppetlabs/code/environments/production/manifests directory on the master node i.e Jump Server. 
+Using puppet file resource, perform the below mentioned tasks.
+
+A file named official.txt already exists under /opt/finance directory on App Server 3.
+Add content Welcome to xFusionCorp Industries! in official.txt file on App Server 3.
+Set its permissions to 0744.
+
+demo.pp:
+class file_permission {
+ file { '/opt/finance/official.txt':
+  content => 'Welcome to xFusionCorp Industries!',
+  mode => '0744',
+ }
+node stapp03.stratos.xfusioncorp.com {
+ include file_permission
+ }
+}

@@ -11,46 +11,67 @@ Make sure to use the password given in the ~/playbooks/secrets/vault.txt file as
 You can use ~/playbooks/secrets/vault.txt file as a vault secret file while running the playbook (make necessary changes in ~/playbooks/ansible.cfg file).
 f. All users under admins group must be added as sudo users. To do so, simply make them member of the wheel group as well.
 
+users.yml:
+admins:
+  - rob
+  - david
+  - joy
+
+developers:
+  - tim
+  - ray
+  - jim
+  - mark
+
+Add in ansible.cfg : 
+-> vault_password_file = /home/thor/playbooks/secrets/secrets.txt
+Create a file containing all password and encrypt it with vault password (be sure to be in the default ansible.cfg folder to use the vault password :
+-> /secrets/secrets.txt : 
+admin_password: Rc5C9EyvbU
+developer_password: dCV3szSGNA 
+-> ansible-vault encrypt secrets/secrets.txt
+Output: $ANSIBLE_VAULT;1.1;AES256
+36393839343934336434646233646263363837363131623263303136633235633038396532613465
+3165346538613566313231303939643532663037333838650a313562656665313861616631626234
+61653164616665343766303262373432333835323232353263323037366366366533336630643564
+3339626231333366330a346664636230313162303230303364313265333538646237646338393932
+38636130353061386636646437633065303637613938393761356237353261363639353565623961
+34653863636165646336613634356436616430373038356364363630653965636332393861366663
+333533373963313264323831623739643137
+
+add_users.yml:
 ---
 - hosts: stapp02
-  become: true
-  gather_facts: yes
+  become: yes
   vars_files:
-  - ./data/users.yml
-  - ./secret/vault.txt
-
+  - /home/thor/playbooks/secrets/secrets.txt
+  - /home/thor/playbooks/data/users.yml
   tasks:
 
-  - name: 
-    debug:
-      var: admins
-
-  - name Create group admins
+  - name: Create admins group
     group:
       name: admins
       state: present
-  
-  - name: Create group developpers
-    group:
-      name: developpers
+
+
+  - name: Create developers group
+    group: 
+      name: developers
       state: present
 
-  - name: Create users from admins group
+  - name: Add admins users from users.yml in admins group
     user:
-      name: {{ item }}
-      group: admins
-      create_home: yes
-      home: /home/{{ item  }}
-      password: 
-    with_items:
-    - admins
+      name: "{{ item }}"
+      password: "{{ admin_password | password_hash('sha512') }}"
+      home: /home/{{ item }}
+      groups: admins, wheel
+    with_items: "{{ admins }}"
 
-  - name: Create users from developpers group
+  - name: Add developers users from users.yml in developers group
     user:
-      name: {{ item }}
-      group: developpers
+      name: "{{ item }}"
+      password: "{{ developer_password | password_hash('sha512') }}"
       create_home: yes
-      home: /var/www/{{ item  }}
-      password: 
-    with_items:
-    - developpers
+      home: /var/www/
+      groups: developers
+    with_items: "{{ developers }}"

@@ -1,0 +1,29 @@
+Create a cronjob named devops.
+
+Set schedule to */5 * * * *.
+
+Container name should be cron-devops.
+
+Use httpd image with latest tag only and remember to mention the tag i.e httpd:latest.
+
+Run a dummy command echo Welcome to xfusioncorp!.
+
+Ensure restart policy is OnFailure.
+
+/tmp/cronjob.yml:
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: devops
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cron-devops
+            image: httpd:latest
+            command: 
+            - echo Welcome to xfusioncorp!
+          restartPolicy: OnFailure

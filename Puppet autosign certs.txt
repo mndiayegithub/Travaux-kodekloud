@@ -9,6 +9,7 @@ Use alias puppet (dns_alt_names) for master node and add its entry in /etc/hosts
 Notes: :- Please make sure to run the puppet agent test using sudo on agent nodes, otherwise you can face certificate issues. 
 In that case you will have to clean the certificates first and then you will be able to run the puppet agent test.
 
+- Côté serveur master
 . cat /etc/hosts
 127.0.0.1       localhost
 ::1     localhost ip6-localhost ip6-loopback
@@ -49,6 +50,8 @@ stapp03.stratos.xfusioncorp.com
 
 puppetserver ca list --all
 
+
+- Côté serveur cible
 . Modify /etc/hosts on target servers (add jump_host as master node of puppet):
 127.0.0.1       localhost
 ::1     localhost ip6-localhost ip6-loopback

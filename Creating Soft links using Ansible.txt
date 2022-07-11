@@ -7,46 +7,53 @@ Note: Validation will try to run the playbook using command ansible-playbook -i 
 
 playbook.yml :
 ---
-- hosts: stapp01,stapp02,stapp03
-  gather_facts: true
-  become: true
+- name: Create an empty file and a symbolic link in App Server 1
+  hosts: stapp01
+  become: yes
   tasks:
-
-  - name: Create an empty file on App Server 1
-    file: 
+  - name: Create an empty file
+    file:
       path: /opt/data/blog.txt
-      src: /opt/data/blog.txt
+      state: touch
       owner: tony
-      group: tony
-      state: touch
-    register: var1
-    when: ansible_facts.hostname == "stapp01"
-    tags: stapp01
+      state: tony
 
-  - name: Create an empty file on App Server 2
-    file:
-      path: /opt/data/story.txt
-      src: /opt/data/story.txt
-      owner: steve
-      group: steve
-      state: touch
-    register: var2
-    when: ansible_facts.hostname == "stapp02"
-    tags: stapp02
-
-  - name: Create an empty file on App Server 3
-    file:
-      path: /opt/data/media.txt
-      src: /opt/data/media.txt
-      owner: banner
-      group: banner
-      state: touch 
-    register: vars3
-    when: ansible_facts.hostname == "stapp03"
-
-  - name: Create a symbolic link on App Server 1,2 and 3
+  - name: Create a symbolic link
     file:
       src: /opt/data
       dest: /var/www/html
       state: link
-    tags: stapp01, stapp02, stapp03
+
+- name: Create an empty file and a symbolic link in App Server 2
+  hosts: stapp02
+  become: yes
+  tasks:
+  - name: Create an empty file
+    file:
+      path: /opt/data/story.txt
+      state: touch
+      owner: steve
+      state: steve
+
+  - name: Create a symbolic link
+    file:
+      src: /opt/data
+      dest: /var/www/html
+      state: link
+
+- name: Create an empty and a symbolic link in App Server 3
+  hosts: stapp03
+  become: yes
+  tasks:
+  - name: Create an empty file
+    file:
+      path: /opt/data/media.txt
+      state: touch
+      owner: banner
+      state: banner
+  
+  - name: Create a symbolic link
+    file:
+      src: /opt/data
+      dest: /var/www/html
+      state: link

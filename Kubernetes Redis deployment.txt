@@ -52,7 +52,7 @@ spec:
         volumeMounts:
         - mountPath: /redis-master-data
           name: data
-        - mountPath: /redis-mater
+        - mountPath: /redis-master
           name: redis-config
       volumes:
       - name: data

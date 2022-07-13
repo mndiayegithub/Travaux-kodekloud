@@ -24,7 +24,7 @@ developers:
   - mark
 
 Add in ansible.cfg : 
--> vault_password_file = /home/thor/playbooks/secrets/secrets.txt
+-> vault_password_file = /home/thor/playbooks/secrets/vault.txt
 Create a file containing all password and encrypt it with vault password (be sure to be in the default ansible.cfg folder to use the vault password :
 -> /secrets/secrets.txt : 
 admin_password: Rc5C9EyvbU

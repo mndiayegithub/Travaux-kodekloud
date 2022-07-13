@@ -16,7 +16,7 @@ playbook.yml :
       path: /opt/data/blog.txt
       state: touch
       owner: tony
-      state: tony
+      group: tony
 
   - name: Create a symbolic link
     file:
@@ -33,7 +33,7 @@ playbook.yml :
       path: /opt/data/story.txt
       state: touch
       owner: steve
-      state: steve
+      group: steve
 
   - name: Create a symbolic link
     file:
@@ -50,7 +50,7 @@ playbook.yml :
       path: /opt/data/media.txt
       state: touch
       owner: banner
-      state: banner
+      group: banner
   
   - name: Create a symbolic link
     file:

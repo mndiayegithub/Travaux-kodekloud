@@ -10,7 +10,7 @@
     archive:
        path: /usr/src/sysops/
        dest: /opt/sysops/apps.tar.gz
-       format: gz
+       format: gz 
        owner: tony
        group: tony
     when: inventory_hostname == "stapp01"

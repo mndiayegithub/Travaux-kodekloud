@@ -1,11 +1,19 @@
-- Docker-ce :
+#!/bin/bash
+#Docker-ce :
 yum install -y yum-utils
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-yum install docker-ce docker-ce-cli containerd.io
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo -y
+yum install docker-ce docker-ce-cli containerd.io -y
 
-- Docker-compose:
+#Docker-compose:
 curl -L "https://github.com/docker/compose/releases/download/1.28.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+systemctl --system
+service docker restart
 
 service docker start && service docker status
 

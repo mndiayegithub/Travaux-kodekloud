@@ -1,0 +1,11 @@
+a. Create an image beta:datacenter on Application Server 3 from a container ubuntu_latest that is running on same server.
+
+docker ps :
+CONTAINER ID   IMAGE     COMMAND   CREATED              STATUS          PORTS     NAMES
+bee15bf3df72   ubuntu    "bash"    About a minute ago   Up 59 seconds             ubuntu_latest
+
+docker commit bee15bf3df72 ubuntu beta:datacenter
+
+docker images :
+REPOSITORY   TAG          IMAGE ID       CREATED         SIZE
+beta         datacenter   6bc9bb623f92   8 seconds ago   113MB

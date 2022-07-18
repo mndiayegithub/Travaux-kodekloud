@@ -1,0 +1,16 @@
+- Set ssh public key 
+- wget http://ip_adress:port/jnlpJars/jenkins-cli.jar
+- Set token
+java -jar jenkins-cli.jar -s http://ip_adress:port/ -auth user:token
+java -jar jenkins-cli.jar -s http://10.10.20.6:8080 -auth mndiaye:110a76865e9134a9393100a3538fc662bf
+- To see list of jobs created for example: 
+java -jar jenkins-cli.jar -s http://ip_adress:port/ user:token -webSocket list-jobs
+- Create a job test1 and build it in the CLI:
+java -jar jenkins-cli.jar -s http://10.10.20.6:8080 -auth mndiaye:110a76865e9134a9393100a3538fc662bf -webSocket build test1
+- Retrieve the endpoint of jenkins with Jenkins CLI
+curl -Lv https://JENKINS_URL:PORT/login 2>&1 | grep -i 'x-ssh-endpoint'
+curl -Lv http://localhost:8085/login 2>&1 | grep -i 'x-ssh-endpoint'
+-> < X-SSH-Endpoint: 8085-port-520084e724f84aa3.labs.kodekloud.com:8022
+- Connect to Jenkins via SSH key
+ssh -i /home/mike/.ssh/jenkins_key -l mike -p 8022 jenkins-server help
+

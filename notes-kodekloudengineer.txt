@@ -37,6 +37,7 @@ sed -i 's/the\b/is/g' copy.txt
 sed '/\<following\>/d' /home/BSD.txt > /home/BSD_DELETE.txt
 - Replace a string by another in a file and make sure not to alter words containing strings (Neither) : replace 'the' with 'for' and 
 sed 's/the\b/for/g' /home/BSD.txt > /home/BSD_REPLACE.txt
+sed 's/\bthe\b/for/g' /home/BSD.txt > /home/BSD_REPLACE.txt
 
 - Create a user : adduser <name>
 - Add a group user : groupadd <group>
